@@ -889,7 +889,7 @@ void Client::FinishTrade(Mob* tradingWith, bool finalizer, void* event_entry, st
 				bool isPetAndCanHaveNoDrop = (RuleB(Pets, CanTakeNoDrop) && 
 					_CLIENTPET(tradingWith) && 
 					tradingWith->GetPetType()<=petOther);
-				// if it was not a NO DROP or Attuned or Augmented item (or if a GM is trading), let the NPC have it
+				// if it was NOT a NO DROP or Attuned or Augmented item (or if a GM is trading), let the NPC have it
 				if(GetGM() || (inst->IsAttuned() == false && 
 					inst->IsAugmented() == false &&
 					(item->NoDrop != 0 || isPetAndCanHaveNoDrop))) {
