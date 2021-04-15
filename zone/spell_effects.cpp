@@ -3593,27 +3593,6 @@ void Mob::DoBuffTic(const Buffs_Struct &buff, int slot, Mob *caster)
 
 	const SPDat_Spell_Struct &spell = spells[buff.spellid];
 
-	if (IsNPC()) {
-		std::vector<EQ::Any> args;
-		args.push_back(&buff.ticsremaining);
-		args.push_back(&buff.casterlevel);
-		args.push_back(&slot);
-		int i = parse->EventSpell(EVENT_SPELL_BUFF_TIC_NPC, CastToNPC(), nullptr, buff.spellid,
-					  caster ? caster->GetID() : 0, &args);
-		if (i != 0) {
-			return;
-		}
-	} else {
-		std::vector<EQ::Any> args;
-		args.push_back(&buff.ticsremaining);
-		args.push_back(&buff.casterlevel);
-		args.push_back(&slot);
-		int i = parse->EventSpell(EVENT_SPELL_BUFF_TIC_CLIENT, nullptr, CastToClient(), buff.spellid,
-					  caster ? caster->GetID() : 0, &args);
-		if (i != 0) {
-			return;
-		}
-	}
 
 	for (int i = 0; i < EFFECT_COUNT; i++) {
 		if (IsBlankSpellEffect(buff.spellid, i))
@@ -3877,6 +3856,30 @@ void Mob::DoBuffTic(const Buffs_Struct &buff, int slot, Mob *caster)
 	 */
 	if (degenerating_effects)
 		CalcBonuses();
+
+	if (IsNPC()) {
+		std::vector<EQ::Any> args;
+		args.push_back(&buff.ticsremaining);
+		args.push_back(&buff.casterlevel);
+		args.push_back(&slot);
+		int i = parse->EventSpell(EVENT_SPELL_BUFF_TIC_NPC, CastToNPC(), nullptr, buff.spellid,
+			caster ? caster->GetID() : 0, &args);
+		if (i != 0) {
+			return;
+		}
+	}
+	else {
+		std::vector<EQ::Any> args;
+		args.push_back(&buff.ticsremaining);
+		args.push_back(&buff.casterlevel);
+		args.push_back(&slot);
+		int i = parse->EventSpell(EVENT_SPELL_BUFF_TIC_CLIENT, nullptr, CastToClient(), buff.spellid,
+			caster ? caster->GetID() : 0, &args);
+		if (i != 0) {
+			return;
+		}
+	}
+	//please work
 }
 
 // removes the buff in the buff slot 'slot'
