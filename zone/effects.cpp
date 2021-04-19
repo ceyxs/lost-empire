@@ -65,6 +65,13 @@ int32 Mob::GetActSpellDamage(uint16 spell_id, int32 value, Mob* target) {
 		chance = RuleI(Spells, BaseCritChance); //Wizard base critical chance is 2% (Does not scale with level)
 		chance += itembonuses.CriticalSpellChance + spellbonuses.CriticalSpellChance + aabonuses.CriticalSpellChance;
 		chance += itembonuses.FrenziedDevastation + spellbonuses.FrenziedDevastation + aabonuses.FrenziedDevastation;
+	
+	if (IsClient()) { //Charisma to crit for spells
+		int chabonus;
+		chabonus = (CastToClient()->GetCHA() - 75);
+		if (chabonus <= 0)  chabonus = 0;
+		chance += chabonus;
+	}
 
 	//Crtical Hit Calculation pathway
 	if (chance > 0 || (IsClient() && GetClass() == WIZARD && GetLevel() >= RuleI(Spells, WizCritLevel))) {
