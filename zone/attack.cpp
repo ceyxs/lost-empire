@@ -511,6 +511,13 @@ bool Mob::AvoidDamage(Mob *other, DamageHitInfo &hit)
 		}
 		if (zone->random.Roll(chance)) {
 			hit.damage_done = DMG_BLOCKED;
+			if (defender->IsClient()) {//block script event
+
+				char buf[50];
+				int id = attacker->GetID();
+				sprintf(buf, "%d", id);
+				parse->EventPlayer(EVENT_BLOCK, defender->CastToClient(), buf, 0);
+			}
 			return true;
 		}
 	}
@@ -4361,6 +4368,12 @@ void Mob::TryCriticalHit(Mob *defender, DamageHitInfo &hit, ExtraAttackOptions *
 			hit.damage_done = hit.damage_done * crit_mod / 100;
 			if (IsClient()) {
 				Message(Chat::FocusEffect, "Crit increased base hit from %i to %i", og_damage, hit.damage_done);
+			}
+			if (IsClient()) {
+				char buf[50];
+				int id = defender->GetID();
+				sprintf(buf, "%d", id);
+				parse->EventPlayer(EVENT_MELEE_CRIT, CastToClient(), buf, 0);
 			}
 			// step 3: check deadly strike
 			if (GetClass() == ROGUE && hit.skill == EQ::skills::SkillThrowing) {

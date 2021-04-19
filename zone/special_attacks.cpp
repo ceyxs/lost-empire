@@ -240,7 +240,7 @@ void Client::OPCombatAbility(const CombatAbility_Struct *ca_atk)
 		case OGRE:
 		case TROLL:
 		case BARBARIAN:
-			CanBypassSkillCheck = true;
+			CanBypassSkillCheck = false;
 		default:
 			break;
 		}

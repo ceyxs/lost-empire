@@ -119,7 +119,9 @@ const char *QuestEventSubroutines[_LargestEventID] = {
 	"EVENT_DEATH_ZONE",
 	"EVENT_USE_SKILL",
 	"EVENT_COMBINE_VALIDATE",
-	"EVENT_BOT_COMMAND"
+	"EVENT_BOT_COMMAND",
+	"EVENT_MELEE_CRIT",
+	"EVENT_BLOCK"
 };
 
 PerlembParser::PerlembParser() : perl(nullptr)
@@ -1629,6 +1631,16 @@ void PerlembParser::ExportEventVariables(
 			ExportVar(package_name.c_str(), "data", objid);
 			ExportVar(package_name.c_str(), "text", data);
 			ExportVar(package_name.c_str(), "langid", extradata);
+			break;
+		}
+
+		case EVENT_MELEE_CRIT: {
+			ExportVar(package_name.c_str(), "target_id", data);
+			break;
+		}
+
+		case EVENT_BLOCK: {
+			ExportVar(package_name.c_str(), "attacker_id", data);
 			break;
 		}
 
