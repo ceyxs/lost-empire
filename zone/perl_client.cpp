@@ -1774,11 +1774,12 @@ XS(XS_Client_AccountID) {
 XS(XS_Client_GetMeleeCritChance); /* prototype to pass -Wmissing-prototypes */
 XS(XS_Client_GetMeleeCritChance) {
 	dXSARGS;
-	if (items != 1)
-		Perl_croak(aTHX_ "Usage: Client::GetMeleeCritChance(THIS)");
+	if (items > 2 || items < 1)
+		Perl_croak(aTHX_ "Usage: Client::GetMeleeCritChance(THIS, [int skill = 0])");
 	{
 		Client *THIS;
 		uint32 RETVAL;
+		uint32 skill;
 		dXSTARG;
 
 		if (sv_derived_from(ST(0), "Client")) {
@@ -1790,7 +1791,14 @@ XS(XS_Client_GetMeleeCritChance) {
 		if (THIS == nullptr)
 			Perl_croak(aTHX_ "THIS is nullptr, avoiding crash.");
 
-		RETVAL = THIS->GetMeleeCritChance();
+		if (items == 2) {
+			uint32 skill = (uint32)SvUV(ST(1));
+		}
+		else {
+			skill = 0;
+		}
+
+		RETVAL = THIS->GetMeleeCritChance(skill);
 		XSprePUSH;
 		PUSHu((UV)RETVAL);
 	}

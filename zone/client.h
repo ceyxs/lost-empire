@@ -629,7 +629,7 @@ public:
 	uint32 GetTotalSecondsPlayed() { return(TotalSecondsPlayed); }
 	virtual void SetLevel(uint8 set_level, bool command = false);
 
-	int GetMeleeCritChance();
+	int GetMeleeCritChance(uint16 skill);
 	int GetSpellCritChance();
 
 	void GoToBind(uint8 bindnum = 0);

@@ -9445,11 +9445,12 @@ void Client::SendChatLineBreak(uint16 color) {
 	Message(color, "------------------------------------------------");
 }
 
-int Client::GetMeleeCritChance() {
+int Client::GetMeleeCritChance(uint16 skill) {
 	int crit = GetDEX() - 75;
 	if (crit < 0)  crit = 0;
 
-	crit += itembonuses.CriticalHitChance[EQ::skills::HIGHEST_SKILL + 1] + spellbonuses.CriticalHitChance[EQ::skills::HIGHEST_SKILL + 1] + aabonuses.CriticalHitChance[EQ::skills::HIGHEST_SKILL + 1];
+	crit += itembonuses.CriticalHitChance[EQ::skills::HIGHEST_SKILL + 1] + spellbonuses.CriticalHitChance[EQ::skills::HIGHEST_SKILL + 1] + aabonuses.CriticalHitChance[EQ::skills::HIGHEST_SKILL + 1] +
+		itembonuses.CriticalHitChance[skill] + spellbonuses.CriticalHitChance[skill] + aabonuses.CriticalHitChance[skill];
 
 	if (crit < -100)
 		crit = -100;
