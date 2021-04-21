@@ -1771,6 +1771,58 @@ XS(XS_Client_AccountID) {
 	XSRETURN(1);
 }
 
+XS(XS_Client_GetMeleeCritChance); /* prototype to pass -Wmissing-prototypes */
+XS(XS_Client_GetMeleeCritChance) {
+	dXSARGS;
+	if (items != 1)
+		Perl_croak(aTHX_ "Usage: Client::GetMeleeCritChance(THIS)");
+	{
+		Client *THIS;
+		uint32 RETVAL;
+		dXSTARG;
+
+		if (sv_derived_from(ST(0), "Client")) {
+			IV tmp = SvIV((SV *)SvRV(ST(0)));
+			THIS = INT2PTR(Client *, tmp);
+		}
+		else
+			Perl_croak(aTHX_ "THIS is not of type Client");
+		if (THIS == nullptr)
+			Perl_croak(aTHX_ "THIS is nullptr, avoiding crash.");
+
+		RETVAL = THIS->GetMeleeCritChance();
+		XSprePUSH;
+		PUSHu((UV)RETVAL);
+	}
+	XSRETURN(1);
+}
+
+XS(XS_Client_GetSpellCritChance); /* prototype to pass -Wmissing-prototypes */
+XS(XS_Client_GetSpellCritChance) {
+	dXSARGS;
+	if (items != 1)
+		Perl_croak(aTHX_ "Usage: Client::GetSpellCritChance(THIS)");
+	{
+		Client *THIS;
+		uint32 RETVAL;
+		dXSTARG;
+
+		if (sv_derived_from(ST(0), "Client")) {
+			IV tmp = SvIV((SV *)SvRV(ST(0)));
+			THIS = INT2PTR(Client *, tmp);
+		}
+		else
+			Perl_croak(aTHX_ "THIS is not of type Client");
+		if (THIS == nullptr)
+			Perl_croak(aTHX_ "THIS is nullptr, avoiding crash.");
+
+		RETVAL = THIS->GetSpellCritChance();
+		XSprePUSH;
+		PUSHu((UV)RETVAL);
+	}
+	XSRETURN(1);
+}
+
 XS(XS_Client_AccountName); /* prototype to pass -Wmissing-prototypes */
 XS(XS_Client_AccountName) {
 	dXSARGS;
@@ -6710,6 +6762,8 @@ XS(boot_Client) {
 	XS_VERSION_BOOTCHECK;
 
 	newXSproto(strcpy(buf, "AccountID"), XS_Client_AccountID, file, "$");
+	newXSproto(strcpy(buf, "GetMeleeCritChance"), XS_Client_GetMeleeCritChance, file, "$");
+	newXSproto(strcpy(buf, "GetSpellCritChance"), XS_Client_GetSpellCritChance, file, "$");
 	newXSproto(strcpy(buf, "AccountName"), XS_Client_AccountName, file, "$");
 	newXSproto(strcpy(buf, "AddAAPoints"), XS_Client_AddAAPoints, file, "$$");
 	newXSproto(strcpy(buf, "AddAlternateCurrencyValue"), XS_Client_AddAlternateCurrencyValue, file, "$$$");

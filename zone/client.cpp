@@ -9444,3 +9444,29 @@ void Client::ShowDevToolsMenu()
 void Client::SendChatLineBreak(uint16 color) {
 	Message(color, "------------------------------------------------");
 }
+
+int Client::GetMeleeCritChance() {
+	int crit = GetDEX() - 75;
+	if (crit < 0)  crit = 0;
+
+	crit += itembonuses.CriticalHitChance[EQ::skills::HIGHEST_SKILL + 1] + spellbonuses.CriticalHitChance[EQ::skills::HIGHEST_SKILL + 1] + aabonuses.CriticalHitChance[EQ::skills::HIGHEST_SKILL + 1];
+
+	if (crit < -100)
+		crit = -100;
+
+	return crit;
+}
+
+int Client::GetSpellCritChance() {
+	int crit = GetCHA() - 75;
+	if (crit < 0) crit = 0;
+
+	crit += RuleI(Spells, BaseCritChance); //Wizard base critical chance is 2% (Does not scale with level)
+	crit += itembonuses.CriticalSpellChance + spellbonuses.CriticalSpellChance + aabonuses.CriticalSpellChance;
+	crit += itembonuses.FrenziedDevastation + spellbonuses.FrenziedDevastation + aabonuses.FrenziedDevastation;
+
+	if (crit < -100)
+		crit = -100;
+
+	return crit;
+}
