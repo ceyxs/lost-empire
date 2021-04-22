@@ -3065,8 +3065,13 @@ int Mob::CheckStackConflict(uint16 spellid1, int caster_level1, uint16 spellid2,
 		and the effect is a dot we can go ahead and stack it
 		*/
 		if(effect1 == SE_CurrentHP && spellid1 != spellid2 && sp1_detrimental && sp2_detrimental) {
-			LogSpells("The spells are not the same and it is a detrimental dot, passing");
-			continue;
+			if (spells[spellid1].spellgroup == spells[spellid2].spellgroup) {//If spellgroups are equal
+				if (caster1 != caster2) {//stack if casters are different
+					LogSpells("The spells are not the same and it is a detrimental dot, passing");
+					continue;
+				}
+			}
+			
 		}
 
 		sp1_value = CalcSpellEffectValue(spellid1, i, caster_level1);

@@ -1792,7 +1792,7 @@ XS(XS_Client_GetMeleeCritChance) {
 			Perl_croak(aTHX_ "THIS is nullptr, avoiding crash.");
 
 		if (items == 2) {
-			uint32 skill = (uint32)SvUV(ST(1));
+			skill = (uint32)SvUV(ST(1));
 		}
 		else {
 			skill = 0;
