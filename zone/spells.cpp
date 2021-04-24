@@ -3066,7 +3066,7 @@ int Mob::CheckStackConflict(uint16 spellid1, int caster_level1, uint16 spellid2,
 		*/
 		if(effect1 == SE_CurrentHP && spellid1 != spellid2 && sp1_detrimental && sp2_detrimental) {
 			if (spells[spellid1].spellgroup == spells[spellid2].spellgroup) {//If spellgroups are equal
-				if (caster1 != caster2) {//stack if casters are different
+				if (caster1 != caster2) {//stack if casters are different, otherwise the strongest dot will hold (the highest level one)
 					LogSpells("The spells are not the same and it is a detrimental dot, passing");
 					continue;
 				}
