@@ -3905,14 +3905,15 @@ XS(XS_Mob_CastSpell) {
 XS(XS_Mob_SpellFinished); /* prototype to pass -Wmissing-prototypes */
 XS(XS_Mob_SpellFinished) {
 	dXSARGS;
-	if (items < 2 || items > 5)
-		Perl_croak(aTHX_ "Usage: Mob::SpellFinished(uint16 spell_id, [Mob* spell_target = this], [uint16 mana_cost = 0], [uint16 resist_diff = 0])");
+	if (items < 2 || items > 6)
+		Perl_croak(aTHX_ "Usage: Mob::SpellFinished(uint16 spell_id, [Mob* spell_target = this], [uint16 mana_cost = 0], [uint16 resist_diff = 0], [level_override = -1])");
 	{
 		Mob *THIS;
 		uint16 spell_id = (uint16) SvUV(ST(1));
 		Mob *spell_target;
 		uint16 mana_cost = 0;
 		int16  resist_diff;
+		int16 level_override;
 
 		if (sv_derived_from(ST(0), "Mob")) {
 			IV tmp = SvIV((SV *) SvRV(ST(0)));
@@ -3944,7 +3945,13 @@ XS(XS_Mob_SpellFinished) {
 			resist_diff = spells[spell_id].ResistDiff;
 		}
 
-		THIS->SpellFinished(spell_id, spell_target, EQ::spells::CastingSlot::Item, mana_cost, -1, resist_diff);
+		if (items > 5) {
+			level_override = (int16)SvUV(ST(5));
+		}else {
+			level_override = -1;
+		}
+
+		THIS->SpellFinished(spell_id, spell_target, EQ::spells::CastingSlot::Item, mana_cost, -1, resist_diff, false, level_override);
 	}
 	XSRETURN_EMPTY;
 }
