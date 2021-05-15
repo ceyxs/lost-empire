@@ -512,7 +512,6 @@ bool Mob::AvoidDamage(Mob *other, DamageHitInfo &hit)
 		if (zone->random.Roll(chance)) {
 			hit.damage_done = DMG_BLOCKED;
 			if (defender->IsClient()) {//block script event
-
 				char buf[50];
 				int id = attacker->GetID();
 				sprintf(buf, "%d", id);

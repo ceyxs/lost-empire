@@ -9459,7 +9459,7 @@ int Client::GetMeleeCritChance(uint16 skill) {
 }
 
 int Client::GetSpellCritChance() {
-	int crit = GetCHA() - 75;
+	int crit = (GetCHA() - 75) * .1;
 	if (crit < 0) crit = 0;
 
 	crit += RuleI(Spells, BaseCritChance); //Wizard base critical chance is 2% (Does not scale with level)

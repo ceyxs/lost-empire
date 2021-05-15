@@ -3071,7 +3071,10 @@ int Mob::CheckStackConflict(uint16 spellid1, int caster_level1, uint16 spellid2,
 					continue;
 				}
 			}
-			
+			else {
+				LogSpells("The spells are not the same and it is a detrimental dot, passing");
+				continue;
+			}
 		}
 
 		sp1_value = CalcSpellEffectValue(spellid1, i, caster_level1);

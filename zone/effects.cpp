@@ -20,6 +20,7 @@
 #include "../common/eqemu_logsys.h"
 #include "../common/spdat.h"
 #include "../common/misc_functions.h"
+#include "quest_parser_collection.h"
 
 #include "client.h"
 #include "entity.h"
@@ -68,7 +69,7 @@ int32 Mob::GetActSpellDamage(uint16 spell_id, int32 value, Mob* target) {
 	
 	if (IsClient()) { //Charisma to crit for spells
 		int chabonus;
-		chabonus = (CastToClient()->GetCHA() - 75);
+		chabonus = (CastToClient()->GetCHA() - 75) * .1;
 		if (chabonus <= 0)  chabonus = 0;
 		chance += chabonus;
 	}
@@ -142,6 +143,13 @@ int32 Mob::GetActSpellDamage(uint16 spell_id, int32 value, Mob* target) {
 					if (CastToClient()->Admin() > 1) {
 						Message(Chat::FocusEffect, "Int %i. %i base spell damage, %i bonus damage", GetINT(), -base, -extra);
 					}
+				}
+				//parse->EventPlayer(EVENT_SPELL_CRIT, this->CastToClient(), buf, spell_id);
+				if (target->IsNPC()) {
+					parse->EventSpell(EVENT_SPELL_CRIT_NPC, target->CastToNPC(), nullptr, spell_id, this ? this->GetID() : 0, 0);
+				}
+				if (target->IsClient()) {
+					parse->EventSpell(EVENT_SPELL_CRIT_CLIENT, nullptr, target->CastToClient(), spell_id, this ? this->GetID() : 0, 0);
 				}
 			}
 
@@ -246,6 +254,13 @@ int32 Mob::GetActDoTDamage(uint16 spell_id, int32 value, Mob* target) {
 		}
 
 		value -= extra_dmg;
+
+		if (target->IsNPC()) {
+			parse->EventSpell(EVENT_SPELL_CRIT_NPC, target->CastToNPC(), nullptr, spell_id, this ? this->GetID() : 0, 0);
+		}
+		if (target->IsClient()) {
+			parse->EventSpell(EVENT_SPELL_CRIT_CLIENT, nullptr, target->CastToClient(), spell_id, this ? this->GetID() : 0, 0);
+		}
 	}
 	else {
 
@@ -270,15 +285,7 @@ int32 Mob::GetActDoTDamage(uint16 spell_id, int32 value, Mob* target) {
 
 	 if (IsClient()) {
 		int intbon = 0;
-		if (spells[spell_id].skill == EQ::skills::SkillTigerClaw) {
-			intbon = GetAGI() - 75;
-		}
-		else if (spells[spell_id].skill == EQ::skills::SkillBash) {
-			intbon = GetSTR() - 75;
-		}
-		else{ 
-			intbon = GetINT() - 75; 
-		}
+		intbon = GetINT() - 75; 
 		if (intbon > 0) {
 			int base = value;
 			int extra = value * (intbon * .0025);
@@ -355,6 +362,13 @@ int32 Mob::GetActSpellHealing(uint16 spell_id, int32 value, Mob* target) {
 
 		chance += target->GetFocusIncoming(focusFcHealPctCritIncoming, SE_FcHealPctCritIncoming, this, spell_id);
 
+		if (IsClient()) { //Charisma to crit for spells
+			int chabonus;
+			chabonus = (CastToClient()->GetCHA() - 75) * .1;
+			if (chabonus <= 0)  chabonus = 0;
+			chance += chabonus;
+		}
+
 		if (spellbonuses.CriticalHealDecay)
 			chance += GetDecayEffectValue(spell_id, SE_CriticalHealDecay);
 
@@ -364,6 +378,12 @@ int32 Mob::GetActSpellHealing(uint16 spell_id, int32 value, Mob* target) {
 		if(chance && (zone->random.Roll(chance))) {
 			Critical = true;
 			modifier = 2; //At present time no critical heal amount modifier SPA exists.
+			if (target->IsNPC()) {
+				parse->EventSpell(EVENT_SPELL_CRIT_NPC, target->CastToNPC(), nullptr, spell_id, this ? this->GetID() : 0, 0);
+			}
+			if (target->IsClient()) {
+				parse->EventSpell(EVENT_SPELL_CRIT_CLIENT, nullptr, target->CastToClient(), spell_id, this ? this->GetID() : 0, 0);
+			}
 		}
 
 		value *= modifier;
@@ -397,6 +417,13 @@ int32 Mob::GetActSpellHealing(uint16 spell_id, int32 value, Mob* target) {
 		chance = itembonuses.CriticalHealOverTime + spellbonuses.CriticalHealOverTime + aabonuses.CriticalHealOverTime;
 
 		chance += target->GetFocusIncoming(focusFcHealPctCritIncoming, SE_FcHealPctCritIncoming, this, spell_id);
+
+		if (IsClient()) { //Charisma to crit for spells
+			int chabonus;
+			chabonus = (CastToClient()->GetCHA() - 75) * .1;
+			if (chabonus <= 0)  chabonus = 0;
+			chance += chabonus;
+		}
 
 		if (spellbonuses.CriticalRegenDecay)
 			chance += GetDecayEffectValue(spell_id, SE_CriticalRegenDecay);

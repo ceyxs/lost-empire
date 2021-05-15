@@ -121,7 +121,9 @@ const char *QuestEventSubroutines[_LargestEventID] = {
 	"EVENT_COMBINE_VALIDATE",
 	"EVENT_BOT_COMMAND",
 	"EVENT_MELEE_CRIT",
-	"EVENT_BLOCK"
+	"EVENT_BLOCK",
+	"EVENT_SPELL_CRIT_NPC",
+	"EVENT_SPELL_CRIT_CLIENT"
 };
 
 PerlembParser::PerlembParser() : perl(nullptr)
@@ -989,7 +991,9 @@ void PerlembParser::GetQuestTypes(
 		event == EVENT_SPELL_BUFF_TIC_CLIENT ||
 		event == EVENT_SPELL_BUFF_TIC_NPC ||
 		event == EVENT_SPELL_FADE ||
-		event == EVENT_SPELL_EFFECT_TRANSLOCATE_COMPLETE) {
+		event == EVENT_SPELL_EFFECT_TRANSLOCATE_COMPLETE ||
+		event == EVENT_SPELL_CRIT_NPC||
+		event == EVENT_SPELL_CRIT_CLIENT) {
 		isSpellQuest = true;
 	}
 	else {
@@ -1518,7 +1522,9 @@ void PerlembParser::ExportEventVariables(
 		case EVENT_SPELL_EFFECT_CLIENT:
 		case EVENT_SPELL_EFFECT_NPC:
 		case EVENT_SPELL_BUFF_TIC_CLIENT:
-		case EVENT_SPELL_BUFF_TIC_NPC: {
+		case EVENT_SPELL_BUFF_TIC_NPC:
+		case EVENT_SPELL_CRIT_NPC:
+		case EVENT_SPELL_CRIT_CLIENT:{
 			ExportVar(package_name.c_str(), "caster_id", extradata);
 			break;
 		}

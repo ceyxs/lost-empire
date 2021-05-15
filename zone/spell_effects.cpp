@@ -275,16 +275,6 @@ bool Mob::SpellEffect(Mob* caster, uint16 spell_id, float partial, int level_ove
 #endif
 
 				int32 dmg = effect_value;
-				if (spell_id == 2751 && caster) //Manaburn
-				{
-					dmg = caster->GetMana()*-3;
-					caster->SetMana(0);
-				} else if (spell_id == 2755 && caster) //Lifeburn
-				{
-					dmg = caster->GetHP(); // just your current HP
-					caster->SetHP(dmg / 4); // 2003 patch notes say ~ 1/4 HP. Should this be 1/4 your current HP or do 3/4 max HP dmg? Can it kill you?
-					dmg = -dmg;
-				}
 
 				// hack fix for client health not reflecting server value
 				last_hp = 0;
@@ -293,11 +283,13 @@ bool Mob::SpellEffect(Mob* caster, uint16 spell_id, float partial, int level_ove
 				if(dmg < 0) {
 					if (!PassCastRestriction(false, spells[spell_id].base2[i], true))
 						break;
+					dmg = caster->GetActSpellDamage(spell_id, dmg, this);
 					dmg = -dmg;
 					Damage(caster, dmg, spell_id, spell.skill, false, buffslot, false);
 				} else {
 					if (!PassCastRestriction(false, spells[spell_id].base2[i], false))
 						break;
+					dmg = caster->GetActSpellHealing(spell_id, dmg, this);
 					HealDamage(dmg, caster);
 				}
 				break;
