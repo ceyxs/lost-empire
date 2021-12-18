@@ -7059,6 +7059,32 @@ XS(XS_Mob_GetItemStat) {
 	XSRETURN(1);
 }
 
+XS(XS_Mob_FollowByID); /* prototype to pass -Wmissing-prototypes */
+XS(XS_Mob_FollowByID) {
+	dXSARGS;
+	if (items != 3)
+		Perl_croak(aTHX_ "Usage: Mob::FollowByID(THIS, uint32 id, uint32 distance)");
+	{
+		Mob *THIS;
+		uint32 id = (uint32)SvUV(ST(1));
+		uint32 distance = (uint32)SvUV(ST(2));
+		dXSTARG;
+
+		if (sv_derived_from(ST(0), "Mob")) {
+			IV tmp = SvIV((SV *)SvRV(ST(0)));
+			THIS = INT2PTR(Mob *, tmp);
+		}
+		else
+			Perl_croak(aTHX_ "THIS is not of type Mob");
+		if (THIS == nullptr)
+			Perl_croak(aTHX_ "THIS is nullptr, avoiding crash.");
+
+		THIS->SetFollowID(id);
+		THIS->SetFollowDistance(distance);
+	}
+	XSRETURN_EMPTY;
+}
+
 XS(XS_Mob_GetGlobal);
 XS(XS_Mob_GetGlobal) {
 	dXSARGS;
@@ -8919,6 +8945,7 @@ XS(boot_Mob) {
 	newXSproto(strcpy(buf, "SpellEffect"), XS_Mob_SpellEffect, file, "$$;$$$$$$");
 	newXSproto(strcpy(buf, "TempName"), XS_Mob_TempName, file, "$:$");
 	newXSproto(strcpy(buf, "GetItemStat"), XS_Mob_GetItemStat, file, "$$$");
+	newXSproto(strcpy(buf, "FollowByID"), XS_Mob_FollowByID, file, "$$$");
 	newXSproto(strcpy(buf, "GetGlobal"), XS_Mob_GetGlobal, file, "$$");
 	newXSproto(strcpy(buf, "SetGlobal"), XS_Mob_SetGlobal, file, "$$$$$;$");
 	newXSproto(strcpy(buf, "TarGlobal"), XS_Mob_TarGlobal, file, "$$$$$$$");
