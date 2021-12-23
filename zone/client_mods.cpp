@@ -1648,7 +1648,7 @@ int32 Client::CalcBaseEndurance()
 
 int32 Client::CalcEnduranceRegen(bool bCombat)
 {
-	int base = 10;
+	int base = 15;
 	auto item_bonus = 0;
 	item_bonus += itembonuses.EnduranceRegen; // this is capped already
 	base += item_bonus;
