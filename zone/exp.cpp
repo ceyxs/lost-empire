@@ -518,7 +518,12 @@ void Client::AddEXP(uint32 in_add_exp, uint8 conlevel, bool resexp) {
 		aaexp = 0;
 		m_epp.perAA = 0;
 	}
-
+	if (IsClient()) {//exp gain script event
+		char buf[100];
+		int exp = in_add_exp;
+		sprintf(buf, "%d", exp);
+		parse->EventPlayer(EVENT_GAIN_EXP, this, buf, 0);
+	}
 	// Now update our character's normal and AA xp
 	SetEXP(exp, aaexp, resexp);
 }

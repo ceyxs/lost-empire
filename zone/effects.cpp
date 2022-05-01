@@ -121,13 +121,13 @@ int32 Mob::GetActSpellDamage(uint16 spell_id, int32 value, Mob* target) {
 			value -= GetFocusEffect(focusFcDamageAmt, spell_id);
 			value -= GetFocusEffect(focusFcDamageAmt2, spell_id);
 
-			if (RuleB(Spells, IgnoreSpellDmgLvlRestriction) && !spells[spell_id].no_heal_damage_item_mod && itembonuses.SpellDmg)
+			/*if (RuleB(Spells, IgnoreSpellDmgLvlRestriction) && !spells[spell_id].no_heal_damage_item_mod && itembonuses.SpellDmg)
 				value -= GetExtraSpellAmt(spell_id, itembonuses.SpellDmg, value)*ratio / 100;
 
 			else if(!spells[spell_id].no_heal_damage_item_mod && itembonuses.SpellDmg && spells[spell_id].classes[(GetClass() % 17) - 1] >= GetLevel() - 5)
-				value -= GetExtraSpellAmt(spell_id, itembonuses.SpellDmg, value)*ratio/100;
+				value -= GetExtraSpellAmt(spell_id, itembonuses.SpellDmg, value)*ratio/100;*/
 
-			else if (IsNPC() && CastToNPC()->GetSpellScale())
+			if (IsNPC() && CastToNPC()->GetSpellScale())
 				value = int(static_cast<float>(value) * CastToNPC()->GetSpellScale() / 100.0f);
 
 			entity_list.MessageCloseString(
@@ -136,12 +136,14 @@ int32 Mob::GetActSpellDamage(uint16 spell_id, int32 value, Mob* target) {
 
 			if (IsClient()) {
 				int bon = GetINT() - 75;
+				int spdam = itembonuses.SpellDmg;
+				bon += (spdam * 5);
 				if (bon > 0) {
 					int base = value;
 					int extra = value * (bon * .0025);
 					value += extra;
 					if (CastToClient()->Admin() > 1) {
-						Message(Chat::FocusEffect, "Int %i. %i base spell damage, %i bonus damage", GetINT(), -base, -extra);
+						Message(Chat::FocusEffect, "Int:%i Spell Dmg: %i. %i base spell damage, %i bonus damage", GetINT(), itembonuses.SpellDmg, -base, -extra);
 					}
 				}
 				//parse->EventPlayer(EVENT_SPELL_CRIT, this->CastToClient(), buf, spell_id);
@@ -348,11 +350,13 @@ int32 Mob::GetActSpellHealing(uint16 spell_id, int32 value, Mob* target) {
 
 	if (IsClient()) {
 		int bon = GetWIS() - 75;
+		int healamt = itembonuses.HealAmt;
+		bon += (healamt * 5);
 		if (bon > 0) {
 			int base = value;
 			int extra = value * (bon * .0025);
 			value += extra;
-			Message(Chat::FocusEffect, "Wis %i. %i base healing, %i bonus healing", GetWIS(), base, extra);
+			Message(Chat::FocusEffect, "Wis:%i Heal Amt:%i. %i base healing, %i bonus healing", GetWIS(), itembonuses.HealAmt, base, extra);
 		}
 	}
 	// Instant Heals
@@ -391,8 +395,8 @@ int32 Mob::GetActSpellHealing(uint16 spell_id, int32 value, Mob* target) {
 		value += GetFocusEffect(focusFcHealAmt, spell_id);
 		value += target->GetFocusIncoming(focusFcHealAmtIncoming, SE_FcHealAmtIncoming, this, spell_id);
 
-		if(!spells[spell_id].no_heal_damage_item_mod && itembonuses.HealAmt && spells[spell_id].classes[(GetClass()%17) - 1] >= GetLevel() - 5)
-			value += GetExtraSpellAmt(spell_id, itembonuses.HealAmt, value) * modifier;
+		//if(!spells[spell_id].no_heal_damage_item_mod && itembonuses.HealAmt && spells[spell_id].classes[(GetClass()%17) - 1] >= GetLevel() - 5)
+		//	value += GetExtraSpellAmt(spell_id, itembonuses.HealAmt, value) * modifier;
 
 		value += value*target->GetHealRate(spell_id, this)/100;
 

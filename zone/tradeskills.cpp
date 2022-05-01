@@ -1043,9 +1043,8 @@ bool Client::TradeskillExecute(DBTradeskillRecipe_Struct *spec) {
 		// Minimum chance is always 5
 		chance = 5;
 	}
-	else if (chance > 95) {
-		//cap is 95, shouldent reach this before trivial, but just in case.
-		chance = 95;
+	else if (chance > 100) {
+		chance = 100.0f;
 	}
 
 	LogTradeskills("Current skill: [{}] , Trivial: [{}] , Success chance: [{}] percent", user_skill, spec->trivial, chance);

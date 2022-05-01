@@ -5125,7 +5125,7 @@ void Mob::CommonOutgoingHitSuccess(Mob* defender, DamageHitInfo &hit, ExtraAttac
 	min_mod = std::max(min_mod, extra_mincap);
 	if (min_mod && hit.damage_done < min_mod) // SPA 186
 		hit.damage_done = min_mod;
-
+	/*
 	if (IsClient()) {
 		int extra = 0;
 		int bon = 0;
@@ -5166,6 +5166,50 @@ void Mob::CommonOutgoingHitSuccess(Mob* defender, DamageHitInfo &hit, ExtraAttac
 			break;
 		}
 		hit.damage_done += extra;
+	}
+	*/
+
+	if (IsClient()) {
+		int extra = 0;
+		int bon = 0;
+		int clientclass = GetClass();
+		switch (clientclass) {
+		case PALADIN:
+		case CLERIC:
+		case MAGICIAN:
+			bon = (CastToClient()->GetSTR() - 75);
+			if (bon > 0) {
+				int base = hit.damage_done;
+				int dmg = hit.damage_done * (bon * .0025);
+				hit.damage_done += dmg;
+				if (IsClient() && CastToClient()->Admin() > 1) {
+					Message(Chat::FocusEffect, "Str %i. %i base hit, %i stat damage, %i damage bonus, %i total", GetSTR(), base, dmg, hit.min_damage, (hit.damage_done + hit.min_damage));
+				}
+			}
+			break;
+		case ROGUE:
+			bon = (CastToClient()->GetAGI() - 75);
+			if (bon > 0) {
+				int base = hit.damage_done;
+				int dmg = hit.damage_done * (bon * .0025);
+				hit.damage_done += dmg;
+				if (IsClient() && CastToClient()->Admin() > 1) {
+					Message(Chat::FocusEffect, "Agi %i. %i base hit, %i stat damage, %i damage bonus, %i total", GetAGI(), base, dmg, hit.min_damage, (hit.damage_done + hit.min_damage));
+				}
+			}
+			break;
+		default:
+			bon = (CastToClient()->GetSTR() - 75);
+			if (bon > 0) {
+				int base = hit.damage_done;
+				int dmg = hit.damage_done * (bon * .0025);
+				hit.damage_done += dmg;
+				if (IsClient() && CastToClient()->Admin() > 1) {
+					Message(Chat::FocusEffect, "Str %i. %i base hit, %i stat damage, %i damage bonus, %i total", GetSTR(), base, dmg, hit.min_damage, (hit.damage_done + hit.min_damage));
+				}
+			}
+			break;
+		}
 	}
 
 	TryCriticalHit(defender, hit, opts);

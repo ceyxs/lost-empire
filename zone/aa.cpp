@@ -493,6 +493,7 @@ void Client::ResetAA() {
 	m_pp.group_leadership_exp = 0;
 	m_pp.raid_leadership_exp = 0;
 
+	database.DeleteCharacterAAs(CharacterID());
 	database.DeleteCharacterLeadershipAAs(CharacterID());
 	// undefined for these clients
 	if (ClientVersionBit() & EQ::versions::maskTitaniumAndEarlier)

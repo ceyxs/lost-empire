@@ -92,6 +92,7 @@ typedef enum {
 	EVENT_BLOCK,
 	EVENT_SPELL_CRIT_NPC,
 	EVENT_SPELL_CRIT_CLIENT,
+	EVENT_GAIN_EXP,
 	_LargestEventID
 } QuestEventID;
 
