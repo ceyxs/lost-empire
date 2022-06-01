@@ -3994,7 +3994,7 @@ void Mob::TryWeaponProc(const EQ::ItemInstance *inst, const EQ::ItemData *weapon
 	int ourlevel = GetLevel();
 	float ProcBonus = static_cast<float>(aabonuses.ProcChanceSPA +
 		spellbonuses.ProcChanceSPA + itembonuses.ProcChanceSPA);
-	ProcBonus += static_cast<float>(itembonuses.ProcChance) / 10.0f; // Combat Effects
+	//ProcBonus += static_cast<float>(itembonuses.ProcChance) / 10.0f; // Combat Effects
 	float ProcChance = GetProcChances(ProcBonus, hand);
 
 	if (hand != EQ::invslot::slotPrimary) //Is Archery intened to proc at 50% rate?
@@ -5177,21 +5177,21 @@ void Mob::CommonOutgoingHitSuccess(Mob* defender, DamageHitInfo &hit, ExtraAttac
 		case PALADIN:
 		case CLERIC:
 		case MAGICIAN:
-			bon = (CastToClient()->GetSTR() - 75);
+			bon = (CastToClient()->GetSTR() - 75); 
 			if (bon > 0) {
 				int base = hit.damage_done;
-				int dmg = hit.damage_done * (bon * .0025);
+				int dmg = hit.damage_done * (bon * .0025 + itembonuses.ProcChance * 0.01f);
 				hit.damage_done += dmg;
 				if (IsClient() && CastToClient()->Admin() > 1) {
 					Message(Chat::FocusEffect, "Str %i. %i base hit, %i stat damage, %i damage bonus, %i total", GetSTR(), base, dmg, hit.min_damage, (hit.damage_done + hit.min_damage));
 				}
 			}
 			break;
-		case ROGUE:
+		case RANGER:
 			bon = (CastToClient()->GetAGI() - 75);
 			if (bon > 0) {
 				int base = hit.damage_done;
-				int dmg = hit.damage_done * (bon * .0025);
+				int dmg = hit.damage_done * (bon * .0025 + itembonuses.ProcChance * 0.01f);
 				hit.damage_done += dmg;
 				if (IsClient() && CastToClient()->Admin() > 1) {
 					Message(Chat::FocusEffect, "Agi %i. %i base hit, %i stat damage, %i damage bonus, %i total", GetAGI(), base, dmg, hit.min_damage, (hit.damage_done + hit.min_damage));
@@ -5202,7 +5202,7 @@ void Mob::CommonOutgoingHitSuccess(Mob* defender, DamageHitInfo &hit, ExtraAttac
 			bon = (CastToClient()->GetSTR() - 75);
 			if (bon > 0) {
 				int base = hit.damage_done;
-				int dmg = hit.damage_done * (bon * .0025);
+				int dmg = hit.damage_done * (bon * .0025 + itembonuses.ProcChance * 0.01f);
 				hit.damage_done += dmg;
 				if (IsClient() && CastToClient()->Admin() > 1) {
 					Message(Chat::FocusEffect, "Str %i. %i base hit, %i stat damage, %i damage bonus, %i total", GetSTR(), base, dmg, hit.min_damage, (hit.damage_done + hit.min_damage));

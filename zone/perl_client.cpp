@@ -822,6 +822,58 @@ XS(XS_Client_GetWeight) {
 	XSRETURN(1);
 }
 
+XS(XS_Client_GetItemMeleeDmg); /* prototype to pass -Wmissing-prototypes */
+XS(XS_Client_GetItemMeleeDmg) {
+	dXSARGS;
+	if (items != 1)
+		Perl_croak(aTHX_ "Usage: Client::GetWeight(THIS)");
+	{
+		Client *THIS;
+		uint16 RETVAL;
+		dXSTARG;
+
+		if (sv_derived_from(ST(0), "Client")) {
+			IV tmp = SvIV((SV *)SvRV(ST(0)));
+			THIS = INT2PTR(Client *, tmp);
+		}
+		else
+			Perl_croak(aTHX_ "THIS is not of type Client");
+		if (THIS == nullptr)
+			Perl_croak(aTHX_ "THIS is nullptr, avoiding crash.");
+
+		RETVAL = THIS->GetItemMeleeDmg();
+		XSprePUSH;
+		PUSHu((UV)RETVAL);
+	}
+	XSRETURN(1);
+}
+
+XS(XS_Client_GetItemSpellDmg); /* prototype to pass -Wmissing-prototypes */
+XS(XS_Client_GetItemSpellDmg) {
+	dXSARGS;
+	if (items != 1)
+		Perl_croak(aTHX_ "Usage: Client::GetWeight(THIS)");
+	{
+		Client *THIS;
+		uint16 RETVAL;
+		dXSTARG;
+
+		if (sv_derived_from(ST(0), "Client")) {
+			IV tmp = SvIV((SV *)SvRV(ST(0)));
+			THIS = INT2PTR(Client *, tmp);
+		}
+		else
+			Perl_croak(aTHX_ "THIS is not of type Client");
+		if (THIS == nullptr)
+			Perl_croak(aTHX_ "THIS is nullptr, avoiding crash.");
+
+		RETVAL = THIS->GetItemSpellDmg();
+		XSprePUSH;
+		PUSHu((UV)RETVAL);
+	}
+	XSRETURN(1);
+}
+
 XS(XS_Client_GetEXP); /* prototype to pass -Wmissing-prototypes */
 XS(XS_Client_GetEXP) {
 	dXSARGS;
@@ -6927,6 +6979,8 @@ XS(boot_Client) {
 	newXSproto(strcpy(buf, "GetThirst"), XS_Client_GetThirst, file, "$$");
 	newXSproto(strcpy(buf, "GetTotalSecondsPlayed"), XS_Client_GetTotalSecondsPlayed, file, "$");
 	newXSproto(strcpy(buf, "GetWeight"), XS_Client_GetWeight, file, "$");
+	newXSproto(strcpy(buf, "GetItemMeleeDmg"), XS_Client_GetItemMeleeDmg, file, "$");
+	newXSproto(strcpy(buf, "GetItemSpellDmg"), XS_Client_GetItemMeleeDmg, file, "$");
 	newXSproto(strcpy(buf, "GMKill"), XS_Client_GMKill, file, "$");
 	newXSproto(strcpy(buf, "GoFish"), XS_Client_GoFish, file, "$");
 	newXSproto(strcpy(buf, "GrantAlternateAdvancementAbility"), XS_Client_GrantAlternateAdvancementAbility, file, "$$$;$");

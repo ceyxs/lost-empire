@@ -634,6 +634,8 @@ public:
 	void Fling(float value, float target_x, float target_y, float target_z);
 	void Fling(float value, float target_x, float target_y, float target_z, bool ignore_los);
 	void Fling(float value, float target_x, float target_y, float target_z, bool ignore_los, bool clipping);
+	int GetItemMeleeDmg();
+	int GetItemSpellDmg();
 
 	void GoToBind(uint8 bindnum = 0);
 	void GoToSafeCoords(uint16 zone_id, uint16 instance_id);

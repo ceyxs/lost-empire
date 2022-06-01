@@ -453,10 +453,23 @@ bool Mob::DoCastSpell(uint16 spell_id, uint16 target_id, CastingSlot slot,
 		int my_curmana = GetMana();
 		int my_maxmana = GetMaxMana();
 
+		if (IsClient()) {
+			if (GetClass() == 11) {
+				my_curmana = GetHP();
+				my_maxmana = GetMaxHP();
+				mana_cost = int(mana_cost * GetMaxHP() * .01f);
+			}
+		}
 		if(my_curmana < mana_cost)	// not enough mana
 		{
-			//this is a special case for NPCs with no mana...
-			if(IsNPC() && my_curmana == my_maxmana)
+			if (IsClient()){
+				if (GetClass() == 11) {
+					Message(Chat::Red, "Insufficient Health to cast this spell.");
+					InterruptSpell();
+					return(false);
+				}
+			}
+			else if(IsNPC() && my_curmana == my_maxmana)//this is a special case for NPCs with no mana...
 			{
 				mana_cost = 0;
 			} else {
@@ -473,9 +486,10 @@ bool Mob::DoCastSpell(uint16 spell_id, uint16 target_id, CastingSlot slot,
 		}
 	}
 
-	if(mana_cost > GetMana())
-		mana_cost = GetMana();
-
+	if (GetClass() != 11) {
+		if (mana_cost > GetMana())
+			mana_cost = GetMana();
+	}
 	// we know our mana cost now
 	casting_spell_mana = mana_cost;
 
@@ -2404,17 +2418,25 @@ bool Mob::SpellFinished(uint16 spell_id, Mob *spell_target, CastingSlot slot, ui
 	// if this was a spell slot or an ability use up the mana for it
 	if(slot != CastingSlot::Item && slot != CastingSlot::PotionBelt && mana_used > 0)
 	{
-		mana_used = GetActSpellCost(spell_id, mana_used);
-		if (mgb) {
-			mana_used *= 2;
+		if (IsClient()) {
+			if (GetClass() == 11) {
+				SetHP(GetHP() - mana_used);
+				Message(Chat::FocusEffect, "Health cost of spell: %i", mana_used);
+			}
 		}
-		// clamp if we some how got focused above our current mana
-		if (GetMana() < mana_used)
-			mana_used = GetMana();
-		LogSpells("Spell [{}]: consuming [{}] mana", spell_id, mana_used);
-		if (!DoHPToManaCovert(mana_used)) {
-			SetMana(GetMana() - mana_used);
-			TryTriggerOnValueAmount(false, true);
+		else {
+			mana_used = GetActSpellCost(spell_id, mana_used);
+			if (mgb) {
+				mana_used *= 2;
+			}
+			// clamp if we some how got focused above our current mana
+			if (GetMana() < mana_used)
+				mana_used = GetMana();
+			LogSpells("Spell [{}]: consuming [{}] mana", spell_id, mana_used);
+			if (!DoHPToManaCovert(mana_used)) {
+				SetMana(GetMana() - mana_used);
+				TryTriggerOnValueAmount(false, true);
+			}
 		}
 	}
 	// one may want to check if this is a disc or not, but we actually don't, there are non disc stuff that have end cost

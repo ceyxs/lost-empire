@@ -162,7 +162,7 @@ int32 Client::LevelRegen()
 	bool sitting = IsSitting();
 	bool feigned = GetFeigned();
 	int level = GetLevel();
-	bool bonus = GetPlayerRaceBit(GetBaseRace()) & RuleI(Character, BaseHPRegenBonusRaces);
+	bool bonus = false;// GetPlayerRaceBit(GetBaseRace()) & RuleI(Character, BaseHPRegenBonusRaces);
 	uint8 multiplier1 = bonus ? 2 : 1;
 	int32 hp = 0;
 	//these calculations should match up with the info from Monkly Business, which was last updated ~05/2008: http://www.monkly-business.net/index.php?pageid=abilities
@@ -246,7 +246,7 @@ int32 Client::CalcHPRegen(bool bCombat)
 		base = static_cast<int>(base_data->hp_regen);
 
 	auto level = GetLevel();
-	bool skip_innate = false;
+	bool skip_innate = true;
 
 	if (IsSitting()) {
 		if (level >= 50) {
